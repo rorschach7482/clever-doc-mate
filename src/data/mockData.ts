@@ -138,3 +138,65 @@ export const mockMembers: Record<string, ProjectMember[]> = {
     { id: "user-1", name: "John Doe", email: "john.doe@example.com", initials: "JD", role: "owner", joinedAt: "2024-12-01T08:30:00Z" },
   ],
 };
+
+export type PromptCategory = "analysis" | "extraction" | "summary" | "comparison" | "general";
+
+export interface SavedPrompt {
+  id: string;
+  title: string;
+  text: string;
+  category: PromptCategory;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export const promptCategories: { value: PromptCategory; label: string }[] = [
+  { value: "analysis", label: "Analysis" },
+  { value: "extraction", label: "Extraction" },
+  { value: "summary", label: "Summary" },
+  { value: "comparison", label: "Comparison" },
+  { value: "general", label: "General" },
+];
+
+export const mockPrompts: SavedPrompt[] = [
+  {
+    id: "prompt-1",
+    title: "Key Terms Extraction",
+    text: "Extract all key terms, definitions, and important clauses from this document. Present them in a structured format with the term name, its definition, and the page/section where it appears.",
+    category: "extraction",
+    createdAt: "2024-11-20T10:00:00Z",
+    updatedAt: "2024-12-01T14:30:00Z",
+  },
+  {
+    id: "prompt-2",
+    title: "Document Summary",
+    text: "Provide a comprehensive summary of this document including:\n1. Main purpose and objectives\n2. Key stakeholders mentioned\n3. Important dates and deadlines\n4. Critical action items or requirements",
+    category: "summary",
+    createdAt: "2024-11-22T09:00:00Z",
+    updatedAt: "2024-11-22T09:00:00Z",
+  },
+  {
+    id: "prompt-3",
+    title: "Risk Analysis",
+    text: "Analyze this document for potential risks and liabilities. Identify any clauses that could pose legal, financial, or operational risks. Rate each risk as high, medium, or low and explain the reasoning.",
+    category: "analysis",
+    createdAt: "2024-11-25T11:00:00Z",
+    updatedAt: "2024-12-05T16:20:00Z",
+  },
+  {
+    id: "prompt-4",
+    title: "Contract Comparison",
+    text: "Compare the terms in this document with standard industry practices. Highlight any unusual or non-standard clauses that may require additional review or negotiation.",
+    category: "comparison",
+    createdAt: "2024-12-01T08:00:00Z",
+    updatedAt: "2024-12-01T08:00:00Z",
+  },
+  {
+    id: "prompt-5",
+    title: "Compliance Check",
+    text: "Review this document for compliance with relevant regulations and standards. List any potential compliance issues or gaps that need to be addressed.",
+    category: "analysis",
+    createdAt: "2024-12-03T14:00:00Z",
+    updatedAt: "2024-12-03T14:00:00Z",
+  },
+];
