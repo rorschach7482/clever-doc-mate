@@ -1,5 +1,5 @@
 import { FileText, FolderOpen, Library, Plus, LogOut } from "lucide-react";
-import { NavLink, useLocation } from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import {
   Sidebar,
   SidebarContent,
@@ -28,8 +28,22 @@ const navigationItems = [
   },
 ];
 
-export function AppSidebar() {
+interface AppSidebarProps {
+  onNewProject?: () => void;
+}
+
+export function AppSidebar({ onNewProject }: AppSidebarProps) {
   const location = useLocation();
+  const navigate = useNavigate();
+
+  const handleNewProject = () => {
+    if (onNewProject) {
+      onNewProject();
+    } else {
+      // Navigate to dashboard and trigger modal via URL state
+      navigate("/", { state: { openNewProject: true } });
+    }
+  };
 
   return (
     <Sidebar className="border-r border-sidebar-border">
@@ -43,7 +57,11 @@ export function AppSidebar() {
       <SidebarContent className="px-2">
         <SidebarGroup>
           <div className="px-2 mb-3">
-            <Button className="w-full justify-start gap-2" size="sm">
+            <Button 
+              className="w-full justify-start gap-2" 
+              size="sm"
+              onClick={handleNewProject}
+            >
               <Plus className="h-4 w-4" />
               New Project
             </Button>
