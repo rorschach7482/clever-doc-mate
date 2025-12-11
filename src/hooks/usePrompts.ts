@@ -1,0 +1,79 @@
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { promptsApi } from "@/services/api";
+import type { CreatePromptRequest, UpdatePromptRequest } from "@/services/api";
+
+export const promptKeys = {
+  all: ["prompts"] as const,
+  lists: () => [...promptKeys.all, "list"] as const,
+  list: (filters?: { category?: string }) => [...promptKeys.lists(), filters] as const,
+  details: () => [...promptKeys.all, "detail"] as const,
+  detail: (id: string) => [...promptKeys.details(), id] as const,
+};
+
+export function usePrompts() {
+  return useQuery({
+    queryKey: promptKeys.lists(),
+    queryFn: async () => {
+      const response = await promptsApi.getPrompts();
+      if (!response.success) throw new Error(response.message);
+      return response.data;
+    },
+  });
+}
+
+export function usePrompt(id: string) {
+  return useQuery({
+    queryKey: promptKeys.detail(id),
+    queryFn: async () => {
+      const response = await promptsApi.getPrompt(id);
+      if (!response.success) throw new Error(response.message);
+      return response.data;
+    },
+    enabled: !!id,
+  });
+}
+
+export function useCreatePrompt() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (data: CreatePromptRequest) => {
+      const response = await promptsApi.createPrompt(data);
+      if (!response.success) throw new Error(response.message);
+      return response.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: promptKeys.lists() });
+    },
+  });
+}
+
+export function useUpdatePrompt() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ id, data }: { id: string; data: UpdatePromptRequest }) => {
+      const response = await promptsApi.updatePrompt(id, data);
+      if (!response.success) throw new Error(response.message);
+      return response.data;
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: promptKeys.lists() });
+      queryClient.invalidateQueries({ queryKey: promptKeys.detail(data.id) });
+    },
+  });
+}
+
+export function useDeletePrompt() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (id: string) => {
+      const response = await promptsApi.deletePrompt(id);
+      if (!response.success) throw new Error(response.message);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: promptKeys.lists() });
+    },
+  });
+}
