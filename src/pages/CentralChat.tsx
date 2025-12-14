@@ -7,7 +7,8 @@ import { ChatInput } from "@/components/chat/ChatInput";
 import { RecentChatsPreview } from "@/components/chat/RecentChatsPreview";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 import { useChatThreads } from "@/contexts/ChatThreadsContext";
 import type { ChatMessage as ChatMessageType } from "@/services/api/types";
 
@@ -27,6 +28,7 @@ export default function CentralChat() {
   const [isStreaming, setIsStreaming] = useState(false);
   const [isEditingTitle, setIsEditingTitle] = useState(false);
   const [editedTitle, setEditedTitle] = useState("");
+  const [useKnowledgeBase, setUseKnowledgeBase] = useState(true);
 
   // Sync URL param with active thread
   useEffect(() => {
@@ -111,11 +113,11 @@ export default function CentralChat() {
     (content: string) => {
       let threadId = activeThreadId;
 
-      // Build request payload with KB flag always true for central chat
+      // Build request payload with KB flag based on toggle state
       // TODO: Backend will use this payload structure
       const _requestPayload = {
         query: content,
-        useKnowledgeBase: true as const, // Always true for central chat
+        useKnowledgeBase,
       };
 
       // Create thread on first message
@@ -195,17 +197,31 @@ export default function CentralChat() {
                 </>
               )}
             </div>
-            <Badge variant="secondary" className="gap-1">
-              <Database className="h-3 w-3" />
-              Knowledge Base active
-            </Badge>
+            <div className="flex items-center gap-2">
+              <Database className="h-4 w-4 text-muted-foreground" />
+              <Label htmlFor="kb-toggle-active" className="text-sm text-muted-foreground cursor-pointer">
+                Include Knowledge Base
+              </Label>
+              <Switch
+                id="kb-toggle-active"
+                checked={useKnowledgeBase}
+                onCheckedChange={setUseKnowledgeBase}
+              />
+            </div>
           </div>
         ) : (
           <div className="border-b border-border px-6 py-3 flex items-center justify-end">
-            <Badge variant="secondary" className="gap-1">
-              <Database className="h-3 w-3" />
-              Knowledge Base active
-            </Badge>
+            <div className="flex items-center gap-2">
+              <Database className="h-4 w-4 text-muted-foreground" />
+              <Label htmlFor="kb-toggle" className="text-sm text-muted-foreground cursor-pointer">
+                Include Knowledge Base
+              </Label>
+              <Switch
+                id="kb-toggle"
+                checked={useKnowledgeBase}
+                onCheckedChange={setUseKnowledgeBase}
+              />
+            </div>
           </div>
         )}
 
