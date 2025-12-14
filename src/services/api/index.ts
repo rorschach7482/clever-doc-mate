@@ -8,3 +8,4 @@ export { chatThreadsApi } from "./chatThreads";
 export { promptsApi } from "./prompts";
 export { membersApi } from "./members";
 export { userApi } from "./user";
+export { knowledgeBaseApi } from "./knowledgeBase";

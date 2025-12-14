@@ -10,6 +10,7 @@ import PromptsLibrary from "./pages/PromptsLibrary";
 import Profile from "./pages/Profile";
 import CentralChat from "./pages/CentralChat";
 import RecentChats from "./pages/RecentChats";
+import KnowledgeBase from "./pages/KnowledgeBase";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -29,6 +30,7 @@ const App = () => (
             <Route path="/chat" element={<CentralChat />} />
             <Route path="/chat/:chatId" element={<CentralChat />} />
             <Route path="/chats" element={<RecentChats />} />
+            <Route path="/knowledge-base" element={<KnowledgeBase />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
