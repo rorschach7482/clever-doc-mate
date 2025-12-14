@@ -1,4 +1,4 @@
-import { FileText, FolderOpen, Library, Plus, LogOut } from "lucide-react";
+import { FileText, FolderOpen, Library, MessageSquare, Plus, LogOut } from "lucide-react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import {
   Sidebar,
@@ -26,6 +26,11 @@ const navigationItems = [
     url: "/prompts",
     icon: Library,
   },
+  {
+    title: "Recent Chats",
+    url: "/chats",
+    icon: MessageSquare,
+  },
 ];
 
 interface AppSidebarProps {
@@ -36,13 +41,8 @@ export function AppSidebar({ onNewProject }: AppSidebarProps) {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const handleNewProject = () => {
-    if (onNewProject) {
-      onNewProject();
-    } else {
-      // Navigate to dashboard and trigger modal via URL state
-      navigate("/", { state: { openNewProject: true } });
-    }
+  const handleNewChat = () => {
+    navigate("/chat");
   };
 
   return (
@@ -60,10 +60,10 @@ export function AppSidebar({ onNewProject }: AppSidebarProps) {
             <Button 
               className="w-full justify-start gap-2" 
               size="sm"
-              onClick={handleNewProject}
+              onClick={handleNewChat}
             >
               <Plus className="h-4 w-4" />
-              New Project
+              New Chat
             </Button>
           </div>
           
