@@ -1,7 +1,9 @@
 import { useState, useCallback } from "react";
 import { ChatContainer, ChatMessage } from "./ChatMessage";
 import { ChatInput } from "./ChatInput";
-import { MessageSquare } from "lucide-react";
+import { MessageSquare, Database } from "lucide-react";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 import type { ChatMessage as ChatMessageType } from "@/data/mockData";
 
 interface ChatTabProps {
@@ -12,6 +14,7 @@ interface ChatTabProps {
 export function ChatTab({ projectId, initialMessages }: ChatTabProps) {
   const [messages, setMessages] = useState<ChatMessageType[]>(initialMessages);
   const [isStreaming, setIsStreaming] = useState(false);
+  const [includeKnowledgeBase, setIncludeKnowledgeBase] = useState(false);
 
   const simulateStreamingResponse = useCallback(async (userMessage: string) => {
     setIsStreaming(true);
@@ -72,6 +75,14 @@ export function ChatTab({ projectId, initialMessages }: ChatTabProps) {
   }, []);
 
   const handleSendMessage = (content: string) => {
+    // Build request payload with KB flag
+    // TODO: Backend will use this payload structure
+    const _requestPayload = {
+      query: content,
+      projectId,
+      includeKnowledgeBase,
+    };
+
     const userMessage: ChatMessageType = {
       id: `msg-${Date.now()}`,
       role: "user",
@@ -85,6 +96,19 @@ export function ChatTab({ projectId, initialMessages }: ChatTabProps) {
 
   return (
     <div className="flex flex-col h-full">
+      {/* Knowledge Base Toggle */}
+      <div className="border-b border-border px-4 py-2 flex items-center justify-end gap-2">
+        <Database className="h-4 w-4 text-muted-foreground" />
+        <Label htmlFor="kb-toggle" className="text-sm text-muted-foreground cursor-pointer">
+          Include Knowledge Base
+        </Label>
+        <Switch
+          id="kb-toggle"
+          checked={includeKnowledgeBase}
+          onCheckedChange={setIncludeKnowledgeBase}
+        />
+      </div>
+
       {messages.length === 0 ? (
         <div className="flex-1 flex flex-col items-center justify-center text-center p-8">
           <div className="h-12 w-12 rounded-full bg-muted flex items-center justify-center mb-4">

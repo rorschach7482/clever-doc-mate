@@ -1,4 +1,4 @@
-import { FileText, FolderOpen, Library, MessageSquare, Plus, LogOut } from "lucide-react";
+import { FileText, FolderOpen, Library, MessageSquare, Plus, LogOut, Database } from "lucide-react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import {
   Sidebar,
@@ -30,6 +30,11 @@ const navigationItems = [
     title: "Recent Chats",
     url: "/chats",
     icon: MessageSquare,
+  },
+  {
+    title: "Knowledge Base",
+    url: "/knowledge-base",
+    icon: Database,
   },
 ];
 

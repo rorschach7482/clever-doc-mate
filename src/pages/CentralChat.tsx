@@ -1,12 +1,13 @@
 import { useState, useCallback, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { MessageSquare, Pencil, Check, X } from "lucide-react";
+import { MessageSquare, Pencil, Check, X, Database } from "lucide-react";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { ChatContainer, ChatMessage } from "@/components/chat/ChatMessage";
 import { ChatInput } from "@/components/chat/ChatInput";
 import { RecentChatsPreview } from "@/components/chat/RecentChatsPreview";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { useChatThreads } from "@/contexts/ChatThreadsContext";
 import type { ChatMessage as ChatMessageType } from "@/services/api/types";
 
@@ -110,6 +111,13 @@ export default function CentralChat() {
     (content: string) => {
       let threadId = activeThreadId;
 
+      // Build request payload with KB flag always true for central chat
+      // TODO: Backend will use this payload structure
+      const _requestPayload = {
+        query: content,
+        useKnowledgeBase: true as const, // Always true for central chat
+      };
+
       // Create thread on first message
       if (!threadId) {
         const newThread = createThread(content);
@@ -139,52 +147,65 @@ export default function CentralChat() {
     <AppLayout>
       <div className="flex flex-col h-full">
         {/* Chat Header */}
-        {activeThread && (
-          <div className="border-b border-border px-6 py-3 flex items-center gap-2">
-            {isEditingTitle ? (
-              <div className="flex items-center gap-2 flex-1">
-                <Input
-                  value={editedTitle}
-                  onChange={(e) => setEditedTitle(e.target.value)}
-                  className="max-w-md h-8"
-                  autoFocus
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") handleSaveTitle();
-                    if (e.key === "Escape") handleCancelEditTitle();
-                  }}
-                />
-                <Button
-                  size="icon"
-                  variant="ghost"
-                  className="h-8 w-8"
-                  onClick={handleSaveTitle}
-                >
-                  <Check className="h-4 w-4" />
-                </Button>
-                <Button
-                  size="icon"
-                  variant="ghost"
-                  className="h-8 w-8"
-                  onClick={handleCancelEditTitle}
-                >
-                  <X className="h-4 w-4" />
-                </Button>
-              </div>
-            ) : (
-              <div className="flex items-center gap-2">
-                <h1 className="font-medium text-foreground">
-                  {activeThread.title}
-                </h1>
-                <Button
-                  size="icon"
-                  variant="ghost"
-                  className="h-7 w-7"
-                  onClick={handleStartEditTitle}
-                >
-                  <Pencil className="h-3.5 w-3.5" />
-                </Button>
-              </div>
-            )}
+        {activeThread ? (
+          <div className="border-b border-border px-6 py-3 flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              {isEditingTitle ? (
+                <div className="flex items-center gap-2">
+                  <Input
+                    value={editedTitle}
+                    onChange={(e) => setEditedTitle(e.target.value)}
+                    className="max-w-md h-8"
+                    autoFocus
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") handleSaveTitle();
+                      if (e.key === "Escape") handleCancelEditTitle();
+                    }}
+                  />
+                  <Button
+                    size="icon"
+                    variant="ghost"
+                    className="h-8 w-8"
+                    onClick={handleSaveTitle}
+                  >
+                    <Check className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    size="icon"
+                    variant="ghost"
+                    className="h-8 w-8"
+                    onClick={handleCancelEditTitle}
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                </div>
+              ) : (
+                <>
+                  <h1 className="font-medium text-foreground">
+                    {activeThread.title}
+                  </h1>
+                  <Button
+                    size="icon"
+                    variant="ghost"
+                    className="h-7 w-7"
+                    onClick={handleStartEditTitle}
+                  >
+                    <Pencil className="h-3.5 w-3.5" />
+                  </Button>
+                </>
+              )}
+            </div>
+            <Badge variant="secondary" className="gap-1">
+              <Database className="h-3 w-3" />
+              Knowledge Base active
+            </Badge>
+          </div>
+        ) : (
+          <div className="border-b border-border px-6 py-3 flex items-center justify-end">
+            <Badge variant="secondary" className="gap-1">
+              <Database className="h-3 w-3" />
+              Knowledge Base active
+            </Badge>
           </div>
         )}
 

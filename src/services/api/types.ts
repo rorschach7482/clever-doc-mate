@@ -129,6 +129,29 @@ export interface UpdatePromptRequest {
   category?: PromptCategory;
 }
 
+// Knowledge Base Types
+export interface KnowledgeBaseDocument {
+  id: string;
+  filename: string;
+  uploadedAt: string;
+  status: "processing" | "indexed" | "failed";
+  size?: number;
+}
+
+// Chat Request Types with Knowledge Base flags
+export interface SendCentralChatRequest {
+  query: string;
+  useKnowledgeBase: true; // Always true for central chat
+  attachments?: File[];
+}
+
+export interface SendProjectChatRequest {
+  query: string;
+  projectId: string;
+  includeKnowledgeBase: boolean;
+  attachments?: File[];
+}
+
 // User Types
 export interface User {
   id: string;
